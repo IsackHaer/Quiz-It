@@ -32,6 +32,7 @@
             android:layout_marginEnd="16dp"
             android:textAlignment="center"
             android:textSize="34sp"
+            app:layout_constraintBottom_toTopOf="@+id/quiz_true_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quiz_score_tv"
@@ -42,9 +43,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="64dp"
             android:backgroundTint="@color/teal_200"
             android:padding="25dp"
             android:text="True"
@@ -52,9 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/quiz_false_btn"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.80" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/quiz_false_btn"
@@ -66,6 +64,7 @@
             android:padding="25dp"
             android:text="false"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/quiz_true_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/quiz_true_btn"
@@ -77,9 +76,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:textSize="20sp"
+            android:textSize="45sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="15" />
+            tools:text="45" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

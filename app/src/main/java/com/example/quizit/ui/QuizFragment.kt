@@ -6,16 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.quizit.QuizViewModel
 import com.example.quizit.databinding.FragmentQuizBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class QuizFragment : Fragment() {
 
     private lateinit var timer: CountDownTimer
     private lateinit var binding: FragmentQuizBinding
-    private val viewModel: QuizViewModel by viewModels()
+    private val viewModel: QuizViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,61 +29,37 @@ class QuizFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         //first initialization
-        updateUI()
-        startTimer()
+        val timerLength: Long = 20000
+
+        viewModel.endGame.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(QuizFragmentDirections.actionQuizFragmentToEndResultFragment())
+            }
+        }
+
+        viewModel.currentQuestion.observe(viewLifecycleOwner) {
+            binding.quizQuestionTv.text = it.question
+        }
+
+        viewModel.startTimer(timerLength)
+
+        viewModel.timeLeft.observe(viewLifecycleOwner) {
+            binding.quizTimerTv.text = it.toString()
+            if (it == 0L){
+                viewModel.timerDelayToCheckAnswer(requireContext())
+            }
+        }
 
         binding.quizTrueBtn.setOnClickListener {
-            viewModel.checkAnswer(true)
-            timer.cancel()
-            updateUI()
-            startTimer()
+            viewModel.checkAnswer(true,requireContext())
+            viewModel.cancelTimer()
+            viewModel.startTimer(timerLength)
         }
 
         binding.quizFalseBtn.setOnClickListener {
-            viewModel.checkAnswer(false)
-            timer.cancel()
-            updateUI()
-            startTimer()
+            viewModel.checkAnswer(false,requireContext())
+            viewModel.cancelTimer()
+            viewModel.startTimer(timerLength)
         }
-    }
-
-    private fun startTimer(){
-        timer = object : CountDownTimer(15000,1000){
-            override fun onTick(millisUntilFinished: Long) {
-                var timeLeft = millisUntilFinished / 1000
-                binding.quizTimerTv.text = timeLeft.toString()
-            }
-
-            override fun onFinish() {
-                startTimer()
-            }
-
-        }
-        if (viewModel.totalScore < 5)
-            timer.start()
-    }
-
-    private fun updateUI(){
-        binding.quizScoreTv.text = viewModel.score.toString()
-        binding.quizQuestionTv.text = viewModel.currentQuestion.question
-
-        if (viewModel.totalScore == 5) {
-            showEndDialog()
-        }
-    }
-
-    private fun showEndDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Good job!")
-            .setMessage("You got ${viewModel.score}/${viewModel.totalScore} questions right!")
-            .setCancelable(false)
-            .setNegativeButton("Quit") { _,_ ->
-                activity?.finish()
-            }
-            .setPositiveButton("Restart") { _,_ ->
-                viewModel.restartGame()
-                updateUI()
-            }
-            .show()
     }
 }
