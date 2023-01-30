@@ -57,13 +57,12 @@ class QuizViewModel : ViewModel() {
     }
 
     fun getNextQuestion() {
-        val nextQuestion = questions.random()
-
-        if (questions.size == 2 ){
-            _endGame.value = true
+        if (questions.isEmpty() ){
             questions.addAll(previousQuestions)
             previousQuestions.clear()
         }
+
+        val nextQuestion = questions.random()
 
         previousQuestions.add(nextQuestion)
         questions.remove(nextQuestion)
